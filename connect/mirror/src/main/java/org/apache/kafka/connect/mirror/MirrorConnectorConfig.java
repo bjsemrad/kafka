@@ -204,11 +204,11 @@ public class MirrorConnectorConfig extends AbstractConfig {
 
     protected static final String SOURCE_CLUSTER_PREFIX = MirrorMakerConfig.SOURCE_CLUSTER_PREFIX;
     protected static final String TARGET_CLUSTER_PREFIX = MirrorMakerConfig.TARGET_CLUSTER_PREFIX;
+    protected static final String SOURCE_PREFIX = MirrorMakerConfig.SOURCE_PREFIX;
+    protected static final String TARGET_PREFIX = MirrorMakerConfig.TARGET_PREFIX;
     protected static final String PRODUCER_CLIENT_PREFIX = "producer.";
     protected static final String CONSUMER_CLIENT_PREFIX = "consumer.";
     protected static final String ADMIN_CLIENT_PREFIX = "admin.";
-    protected static final String SOURCE_ADMIN_CLIENT_PREFIX = "source.admin.";
-    protected static final String TARGET_ADMIN_CLIENT_PREFIX = "target.admin.";
 
     public MirrorConnectorConfig(Map<String, String> props) {
         this(CONNECTOR_CONFIG_DEF, ConfigUtils.translateDeprecatedConfigs(props, new String[][]{
@@ -242,6 +242,7 @@ public class MirrorConnectorConfig extends AbstractConfig {
         props.putAll(originalsWithPrefix(SOURCE_CLUSTER_PREFIX));
         props.keySet().retainAll(MirrorClientConfig.CLIENT_CONFIG_DEF.names());
         props.putAll(originalsWithPrefix(PRODUCER_CLIENT_PREFIX));
+        props.putAll(originalsWithPrefix(SOURCE_PREFIX + PRODUCER_CLIENT_PREFIX));
         return props;
     }
 
@@ -250,8 +251,9 @@ public class MirrorConnectorConfig extends AbstractConfig {
         props.putAll(originalsWithPrefix(SOURCE_CLUSTER_PREFIX));
         props.keySet().retainAll(MirrorClientConfig.CLIENT_CONFIG_DEF.names());
         props.putAll(originalsWithPrefix(CONSUMER_CLIENT_PREFIX));
+        props.putAll(originalsWithPrefix(SOURCE_PREFIX + CONSUMER_CLIENT_PREFIX));
         props.put(ENABLE_AUTO_COMMIT_CONFIG, "false");
-        props.put(AUTO_OFFSET_RESET_CONFIG, "earliest");
+        props.putIfAbsent(AUTO_OFFSET_RESET_CONFIG, "earliest");
         return props;
     }
 
@@ -275,7 +277,7 @@ public class MirrorConnectorConfig extends AbstractConfig {
         props.putAll(originalsWithPrefix(TARGET_CLUSTER_PREFIX));
         props.keySet().retainAll(MirrorClientConfig.CLIENT_CONFIG_DEF.names());
         props.putAll(originalsWithPrefix(ADMIN_CLIENT_PREFIX));
-        props.putAll(originalsWithPrefix(TARGET_ADMIN_CLIENT_PREFIX));
+        props.putAll(originalsWithPrefix(TARGET_PREFIX + ADMIN_CLIENT_PREFIX));
         return props;
     }
 
@@ -284,7 +286,7 @@ public class MirrorConnectorConfig extends AbstractConfig {
         props.putAll(originalsWithPrefix(SOURCE_CLUSTER_PREFIX));
         props.keySet().retainAll(MirrorClientConfig.CLIENT_CONFIG_DEF.names());
         props.putAll(originalsWithPrefix(ADMIN_CLIENT_PREFIX));
-        props.putAll(originalsWithPrefix(SOURCE_ADMIN_CLIENT_PREFIX));
+        props.putAll(originalsWithPrefix(SOURCE_PREFIX + ADMIN_CLIENT_PREFIX));
         return props;
     }
 
